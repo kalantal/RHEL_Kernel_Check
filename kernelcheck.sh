@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Change to & from where appropriate
+#Change "to" and "from" where appropriate
 from=justin.restivo@citi.com
 to=justin.restivo@citi.com
 kernel_log=/tmp/kernel_log
