@@ -27,27 +27,29 @@ cd "$(dirname "$0")"
 
 if yum check-update | grep kernel
 then
-	echo "Kernel update available at $(date)" 2>&1 | tee -a $kernel_log
-	echo >> $kernel_log
-	lshw -class system 2>&1 -a $kernel_log | head -n 8
-	touch available
-	echo "To: $to" >> not-available
-	echo "From: $from" >> available
-	echo "Subject: RHEL Kernel update available" >> available
-	cat $kernel_log >> available
-	sendmail justin.restivo@citi.com < available
-	rm available
+        echo "Kernel update available at $(date)" 2>&1 | tee -a $kernel_log
+        echo >> $kernel_log
+        sudo lshw -class system 2>&1 | tee -a $kernel_log | head -n 9
+        touch available
+        echo "To: $to" >> not-available
+        echo "From: $from" >> available
+        echo "Subject: RHEL Kernel update available" >> available
+        echo >> $kernel_log
+        cat $kernel_log >> available
+        sendmail justin.restivo@citi.com < available
+        rm available
 else
-	echo "No kernel update available at $(date)" 2>&1 | tee -a $kernel_log
-	echo >> $kernel_log
-	lshw -class system 2>&1 -a $kernel_log | head -n 8
-	touch not-available
-	echo "To: $to" >> not-available
-	echo "From: $from" >> not-available
-	echo "Subject: RHEL Kernel not update available" >> not-available
-	cat $kernel_log >> not-available
-	sendmail justin.restivo@citi.com < not-available
-	rm not-available
+        echo "No kernel update available at $(date)" 2>&1 | tee -a $kernel_log
+        echo >> $kernel_log
+        sudo lshw -class system 2>&1 | tee -a $kernel_log | head -n 9
+        touch not-available
+        echo "To: $to" >> not-available
+        echo "From: $from" >> not-available
+        echo "Subject: RHEL Kernel not update available" >> not-available
+        echo >> $kernel_log
+        cat $kernel_log >> not-available
+        sendmail justin.restivo@citi.com < not-available
+        rm not-available
 fi
 
 exit 0
