@@ -11,9 +11,12 @@ sed -i '1d' $kernel_log
 
 #Validate RHEL release
 if [ ! -f /etc/redhat-release ]; then
-    echo "System is not RHEL, exiting."
+    echo "System is not RHEL -- exiting."
     exit 1
 fi
+
+#Sendmail dependancy
+rpm -qa | grep -qw sendmail || yum install sendmail
 
 #Change directory to the current working directory
 #This script is self contained and will clean up after itself
@@ -25,6 +28,7 @@ then
         echo "Kernel update available at $(date)" 2>&1 | tee -a $kernel_log
         echo >> $kernel_log
 		echo "Current version of RHEL:" >> $kernel_log
+		echo `cat /etc/redhat-release` >> $kernel_log
 		echo `uname -rm` >>$kernel_log
 		echo >> $kernel_log
         touch available
@@ -41,6 +45,7 @@ else
         echo "No kernel update available at $(date)" 2>&1 | tee -a $kernel_log
         echo >> $kernel_log
 		echo "Current version of RHEL:" >> $kernel_log
+		echo `cat /etc/redhat-release` >> $kernel_log
 		echo `uname -rm` >>$kernel_log
         echo >> $kernel_log		
         touch not-available
