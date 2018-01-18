@@ -16,7 +16,12 @@ if [ ! -f /etc/redhat-release ]; then
 fi
 
 #Sendmail dependancy
-rpm -qa | grep -qw sendmail || yum install sendmail
+rpm -qa | grep -qw sendmail || sudo yum install sendmail
+
+#You could also add lshw to validate if the machine is virtual or physical
+#This functionality is removed because this will be run from a baseline system
+#Example that would be added as an echo to $kernel_log
+#sudo lshw | head -n 10
 
 #Change directory to the current working directory
 #This script is self contained and will clean up after itself
