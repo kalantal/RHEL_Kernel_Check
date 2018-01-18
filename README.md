@@ -2,6 +2,8 @@
 
 This is a self contained script to check for a kernel update from a baseline system.
 
+Setup:
+
     cp kernelcheck.sh /etc/cron.daily/
     chmod +x /etc/cron.daily/kernelcheck.sh
     crontab –e
