@@ -40,7 +40,7 @@ then
 		yum check-update | grep kernel >> $kernel_log
 		touch available
 		#Build sendmail configuration file
-		echo "To: $to" >> not-available
+		echo "To: $to" >> available
 		echo "From: $from" >> available
 		echo "Subject: RHEL Kernel update available on system: `uname -n`" >> available
 		echo >> $kernel_log
