@@ -42,7 +42,7 @@ then
 		#Build sendmail configuration file
 		echo "To: $to" >> not-available
 		echo "From: $from" >> available
-		echo "Subject: RHEL Kernel update available on system `uname -n`" >> available
+		echo "Subject: RHEL Kernel update available on system: `uname -n`" >> available
 		echo >> $kernel_log
 		cat $kernel_log >> available
 		sendmail justinjrestivo@gmail.com < available
@@ -59,7 +59,7 @@ else
 		#Build sendmail configuration file
 		echo "To: $to" >> not-available
 		echo "From: $from" >> not-available
-		echo "Subject: No RHEL kernel update available on system `uname -n`" >> not-available
+		echo "Subject: No RHEL kernel update available on system: `uname -n`" >> not-available
 		echo >> $kernel_log
 		cat $kernel_log >> not-available
 		sendmail justinjrestivo@gmail.com < not-available
