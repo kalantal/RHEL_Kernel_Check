@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #Change "to" and "from" where appropriate
-from=justin.restivo@citi.com
-to=justin.restivo@citi.com
+from=justinjrestivo@gmail.com
+to=justinjrestivo@gmail.com
 kernel_log=/tmp/kernel_log
 
 #Fresh start
@@ -27,10 +27,12 @@ if yum check-update | grep kernel
 then
 		echo "Kernel update available at $(date)" 2>&1 | tee -a $kernel_log
 		echo >> $kernel_log
-		echo "Current version of RHEL:" >> $kernel_log
+		echo "Current version of RHEL kernel:" >> $kernel_log
 		echo `cat /etc/redhat-release` >> $kernel_log
 		echo `uname -r` >>$kernel_log
 		echo >> $kernel_log
+		echo "New version(s) of RHEL kernel:" >> $kernel_log
+		yum check-update | grep kernel >> $kernel_log
 		touch available
 		#Build sendmail configuration file
 		echo "To: $to" >> not-available
@@ -38,13 +40,13 @@ then
 		echo "Subject: RHEL Kernel update available on system `uname -n`" >> available
 		echo >> $kernel_log
 		cat $kernel_log >> available
-		sendmail justin.restivo@citi.com < available
+		sendmail justinjrestivo@gmail.com < available
 		#Cleanup
 		rm available
 else
 		echo "No kernel update available at $(date)" 2>&1 | tee -a $kernel_log
 		echo >> $kernel_log
-		echo "Current version of RHEL:" >> $kernel_log
+		echo "Current version of RHEL kernel:" >> $kernel_log
 		echo `cat /etc/redhat-release` >> $kernel_log
 		echo `uname -r` >>$kernel_log
 		echo >> $kernel_log		
@@ -55,9 +57,11 @@ else
 		echo "Subject: No RHEL kernel update available on system `uname -n`" >> not-available
 		echo >> $kernel_log
 		cat $kernel_log >> not-available
-		sendmail justin.restivo@citi.com < not-available
+		sendmail justinjrestivo@gmail.com < not-available
 		#Cleanup
 		rm not-available
 fi
+
+cat $kernel_log
 
 exit 0
