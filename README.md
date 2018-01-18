@@ -7,6 +7,10 @@ This is a self contained script to check for a kernel update from a baselined sy
 
 Example output:
 
+    To: justinjrestivo@gmail.com
+    From: root@localhost
+    Subject: RHEL Kernel update available on system: localhost
+
     Kernel update available at Wed Jan 17 22:38:53 CST 2018
 
     Current version of RHEL kernel:
