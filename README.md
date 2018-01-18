@@ -2,7 +2,10 @@
 
 This is a self contained script to check for a kernel update from a baseline system.
 
-    #Cron every day at 2am
+    cp kernelcheck.sh /etc/cron.daily/
+    chmod +x /etc/cron.daily/kernelcheck.sh
+    crontab –e
+    #2:00 am daily run example:
     0 2 * * * ~/RHEL_Kernel_Check/kernelcheck.sh
 
 Example output:
