@@ -1,8 +1,9 @@
 #!/bin/bash
+#set -x
 
 #Change "to" and "from" where appropriate
-from=justinjrestivo@gmail.com
-to=justinjrestivo@gmail.com
+to=justin.restivo@citi.com
+from=kernel-checker@citi.com
 kernel_log=/tmp/kernel_log
 
 #Fresh start
@@ -11,8 +12,14 @@ sed -i '1d' $kernel_log
 
 #Validate RHEL release
 if [ ! -f /etc/redhat-release ]; then
-    echo "System is not RHEL -- exiting."
-    exit 1
+        echo "System is not RHEL -- exiting."
+        touch not-rhel
+        echo "To: $to" >> not-rhel
+        echo "From: $from" >> not-rhel
+        echo "Subject: `uname -n` is not a RHEL system" >> not-rhel
+        sendmail $to < not-rhel
+        rm not-rhel
+        exit 1
 fi
 
 #Sendmail dependancy
@@ -45,7 +52,7 @@ then
 		echo "Subject: RHEL Kernel update available on system: `uname -n`" >> available
 		echo >> $kernel_log
 		cat $kernel_log >> available
-		sendmail justinjrestivo@gmail.com < available
+		sendmail $to < available
 		#Cleanup
 		rm available
 else
@@ -62,11 +69,12 @@ else
 		echo "Subject: No RHEL kernel update available on system: `uname -n`" >> not-available
 		echo >> $kernel_log
 		cat $kernel_log >> not-available
-		sendmail justinjrestivo@gmail.com < not-available
+		sendmail $to < not-available
 		#Cleanup
 		rm not-available
 fi
 
+clear
 cat $kernel_log
 
 exit 0
