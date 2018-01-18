@@ -1,6 +1,6 @@
 # RHEL_Kernel_Check
 
-This is a self contained script to check for a kernel update from a baselined system.
+This is a self contained script to check for a kernel update from a baseline system.
 
     #Cron every day at 2am
     0 2 * * * ~/RHEL_Kernel_Check/kernelcheck.sh
