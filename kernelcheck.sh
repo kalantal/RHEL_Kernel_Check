@@ -2,7 +2,7 @@
 #set -x
 
 #Change "to" and "from" where appropriate
-to=justin.restivo@citi.com
+to=justinjrestivo@gmail.com
 from=kernel-checker@citi.com
 kernel_log=/tmp/kernel_log
 
@@ -10,16 +10,19 @@ kernel_log=/tmp/kernel_log
 echo > $kernel_log
 sed -i '1d' $kernel_log
 
+#If we have already seen that the system is not rhel AND the system is reporting to currently be RHEL, then remove the blocker saying it's not rhel.
 if [ -f not-rhel ] && [ -f /etc/redhat-release ] ; then
 	rm not-rhel
 fi
 
+#If already seen to be not rhel, exit
 if [ -f not-rhel ]; then
 	echo "System is not RHEL -- exiting."
 	echo "Notification already dispatched to: $to"
 	exit 1
 fi
 
+#Check to see if not rhel
 if [ ! -f /etc/redhat-release ]; then
         echo "System is not RHEL -- exiting."
         touch not-rhel
@@ -43,15 +46,19 @@ rpm -qa | grep -qw sendmail || sudo yum install sendmail
 #This script is self contained and will clean up after itself
 cd "$(dirname "$0")"
 
+#Make a file that knows if there's an update
 yum check-update | grep kernel | grep redhat-release > checker
 
+#If an update has already been seen and there is currently an update, remove the blockers
 if [ -f available ] && [ -s checker ] ; then
 	rm available
 	rm checker
 fi
 
+#remove the first check
 rm checker
 
+#If we have already seen there is an update, exit
 if [ -f available ]; then
 	echo "Kernel update available at $(date)"
 	echo "Notification already dispatched to: $to"
