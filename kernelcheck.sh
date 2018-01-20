@@ -28,7 +28,7 @@ if [ ! -f /etc/redhat-release ]; then
         touch not-rhel
         echo "To: $to" >> not-rhel
         echo "From: $from" >> not-rhel
-        echo "Subject: `uname -n` is not a RHEL system" >> not-rhel
+        echo "Subject: $(uname -n) is not a RHEL system" >> not-rhel
         sendmail $to < not-rhel
 		#rm not-rhel
         exit 1
@@ -44,7 +44,7 @@ rpm -qa | grep -qw sendmail || sudo yum install sendmail
 
 #Change directory to the current working directory
 #This script is self contained and will clean up after itself
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 
 #Make a file that knows if there's an update
 yum check-update | grep kernel | grep redhat-release > checker
@@ -68,11 +68,11 @@ fi
 #Check for kernel updates available in YUM
 if yum check-update | grep kernel | grep redhat-release
 then
-		echo "Kernel update available at $(date)" 2>&1 | tee -a $kernel_log
+		echo "Kernel update available at $(date)" >> $kernel_log
 		echo >> $kernel_log
 		echo "Current version of RHEL kernel:" >> $kernel_log
-		echo `cat /etc/redhat-release` >> $kernel_log
-		echo `uname -r` >>$kernel_log
+		cat /etc/redhat-release >> $kernel_log
+		uname -r >>$kernel_log
 		echo >> $kernel_log
 		echo "New version(s) of RHEL kernel:" >> $kernel_log
 		yum check-update | grep kernel | grep redhat-release >> $kernel_log
@@ -80,24 +80,24 @@ then
 		#Build sendmail configuration file
 		echo "To: $to" >> available
 		echo "From: $from" >> available
-		echo "Subject: RHEL Kernel update available on system: `uname -n`" >> available
+		echo "Subject: RHEL Kernel update available on system: $(uname -n)" >> available
 		echo >> $kernel_log
 		cat $kernel_log >> available
 		sendmail $to < available
 		#Cleanup
 		#rm available
 else
-		echo "No kernel update available at $(date)" 2>&1 | tee -a $kernel_log
+		echo "No kernel update available at $(date)" >> $kernel_log
 		echo >> $kernel_log
 		echo "Current version of RHEL kernel:" >> $kernel_log
-		echo `cat /etc/redhat-release` >> $kernel_log
-		echo `uname -r` >>$kernel_log
-		echo >> $kernel_log		
+		cat /etc/redhat-release >> $kernel_log
+		uname -r >>$kernel_log
+		echo >> $kernel_log
 		touch not-available
 		#Build sendmail configuration file
 		echo "To: $to" >> not-available
 		echo "From: $from" >> not-available
-		echo "Subject: No RHEL kernel update available on system: `uname -n`" >> not-available
+		echo "Subject: No RHEL kernel update available on system: $(uname -n)" >> not-available
 		echo >> $kernel_log
 		cat $kernel_log >> not-available
 		#sendmail $to < not-available
