@@ -2,7 +2,7 @@
 #set -x
 
 #Change "to" and "from" where appropriate
-to=justinjrestivo@gmail.com
+to=justin.restivo@citi.com
 from=kernel-checker@citi.com
 kernel_log=/tmp/kernel_log
 
@@ -50,6 +50,8 @@ if [ -f available ] && [ -s checker ] ; then
 	rm checker
 fi
 
+rm checker
+
 if [ -f available ]; then
 	echo "Kernel update available at $(date)"
 	echo "Notification already dispatched to: $to"
@@ -95,8 +97,6 @@ else
 		#Cleanup
 		rm not-available
 fi
-
-rm checker
 
 cat $kernel_log
 
