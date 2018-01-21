@@ -1,14 +1,15 @@
-# RHEL_Kernel_Check
+# kernel-check
 
-This is a self contained script to check for a kernel update from a baseline system.
+This is a self contained script to check for a kernel or RHEL update from a baseline system. This script will notify you once that a new update is ready. Once the kernel or version has been updated, it will turn back on and begin notifying you of new releases. A file named "available" will also be present to be used as a trigger for using this information.
 
 Setup:
 
-    cp kernelcheck.sh /etc/cron.daily/
-    chmod +x /etc/cron.daily/kernelcheck.sh
+    sudo cp kernelcheck.sh /etc/cron.daily/kernelcheck.sh
+    sudo chmod +x /etc/cron.daily/kernelcheck.sh
+    vi /etc/cron.daily/kernelcheck.sh and sent "to" field
     crontab –e
     #2:00 am daily run example:
-    0 2 * * * ~/RHEL_Kernel_Check/kernelcheck.sh
+    0 2 * * * /etc/cron.daily/kernelcheck.sh
 
 Example output:
 
