@@ -10,19 +10,7 @@ kernel_log=/tmp/kernel_log
 echo > $kernel_log
 sed -i '1d' $kernel_log
 
-#If we have already seen that the system is not rhel AND the system is reporting to currently be RHEL, then remove the blocker saying it's not rhel.
-if [ -f not-rhel ] && [ -f /etc/redhat-release ] ; then
-	rm not-rhel
-fi
-
-#If already seen to be not rhel, exit
-if [ -f not-rhel ]; then
-	echo "System is not RHEL -- exiting."
-	echo "Notification already dispatched to: $to"
-	exit 1
-fi
-
-#Check to see if not rhel
+#Check to see if using RHEL
 if [ ! -f /etc/redhat-release ]; then
         echo "System is not RHEL -- exiting."
         touch not-rhel
@@ -30,13 +18,14 @@ if [ ! -f /etc/redhat-release ]; then
         echo "From: $from" >> not-rhel
         echo "Subject: $(uname -n) is not a RHEL system" >> not-rhel
         sendmail $to < not-rhel
-		#rm not-rhel
+	sudo rm not-rhel
         exit 1
 fi
 
 #Sendmail dependancy
 rpm -qa | grep -qw sendmail || sudo yum install sendmail
 
+#rpm -qa | grep -qw lshw || sudo yum install lshw
 #You could also add lshw to validate if the machine is virtual or physical
 #This functionality is removed because this will be run from a baseline system
 #Example that would be added as an echo to $kernel_log
@@ -44,9 +33,13 @@ rpm -qa | grep -qw sendmail || sudo yum install sendmail
 
 #Change directory to the current working directory
 #This script is self contained and will clean up after itself
-cd "$(dirname "$0")" || exit 1
+#Since we are forced to work in cron, this is a good idea unless we change how this script is called
+#Then we would change the setup to /bin/kernel-check or make a configurable RPM. Might not be worth the time investment
+sudo cd "$(dirname "$0")" || exit 1
 
 #Make a file that knows if there's an update
+#This is done to see if we have already run through the script before
+#A counter would not work because we need to be able to reset when the kernel is tested and updated
 yum check-update | grep kernel | grep redhat-release > checker
 
 #If an update has already been seen and there is currently an update, remove the blockers
@@ -55,8 +48,10 @@ if [ -f available ] && [ -s checker ] ; then
 	rm checker
 fi
 
-#remove the first check
-rm checker
+#Remove the first check
+#This is only done to make evaluating the status easier
+#If "checker" is 0 bytes, there isn't any update information available inside it
+sudo rm checker
 
 #If we have already seen there is an update, exit
 if [ -f available ]; then
@@ -85,7 +80,7 @@ then
 		cat $kernel_log >> available
 		sendmail $to < available
 		#Cleanup
-		#rm available
+		#sudo rm available
 else
 		echo "No kernel update available at $(date)" >> $kernel_log
 		echo >> $kernel_log
@@ -102,7 +97,7 @@ else
 		cat $kernel_log >> not-available
 		#sendmail $to < not-available
 		#Cleanup
-		rm not-available
+		sudo rm not-available
 fi
 
 cat $kernel_log
