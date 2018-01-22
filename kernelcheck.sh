@@ -2,8 +2,8 @@
 #set -x
 
 #Change "to" and "from" where appropriate
-to=justin.restivo@citi.com
-#to=dl.cate.global.cate.auto.test.environment.owners@imceu.eu.ssmb.com
+#to=justin.restivo@citi.com
+to=dl.cate.global.cate.auto.test.environment.owners@imceu.eu.ssmb.com
 from=kernel-checker@citi.com
 kernelcheck_log=/bin/kernel-check/kernelcheck_log
 notrhel=/bin/kernel-check/not-rhel
@@ -36,11 +36,8 @@ sudo rpm -qa | grep -qw sendmail || sudo yum install sendmail
 #Example that would be added as an echo to $kernelcheck_log
 #sudo lshw | head -n 10
 
-#Change directory to the current working directory
-#This script is self contained and will clean up after itself
-#Since we are forced to work in cron, this is a good idea unless we change how this script is called
-#Then we would change the setup to /bin/kernel-check or make a configurable RPM. Might not be worth the time investment
-sudo cd "$(dirname "$0")" || exit 1
+#Change directory to our running directory
+sudo cd /bin/kernel-check
 
 #Make a file that knows if there's an update
 #This is done to see if we have already run through the script before
@@ -48,20 +45,24 @@ sudo cd "$(dirname "$0")" || exit 1
 sudo yum check-update | grep kernel > $checker
 
 #If an update has already been seen and there is currently an update, remove the blockers
-if [ -f $available ] && [ -s checker ] ; then
-        rm $available
-        rm $checker
+if [ -f $available ] && [ ! -s checker ] ; then
+        sudo rm $available
+        sudo rm $checker
 fi
 
 #Remove the first check
 #This is only done to make evaluating the status easier
 #If "checker" is 0 bytes, there isn't any update information available inside it
-sudo rm checker
+#if [ -f $checker ]; then
+#sudo rm checker
+#fi
 
 #If we have already seen there is an update, exit
 if [ -f $available ]; then
         echo "Kernel update available at $(date)"
         echo "Notification already dispatched to: $to"
+                cat $kernelcheck_log
+                sudo rm kernelcheck_log
         exit 1
 fi
 
@@ -74,7 +75,7 @@ then
                 cat /etc/redhat-release >> $kernelcheck_log
                 uname -r >>$kernelcheck_log
                 echo >> $kernelcheck_log
-                echo "New kernel version(s) of RHEL kernel:" >> $kernelcheck_log
+                echo "New version(s) of RHEL kernel:" >> $kernelcheck_log
                 sudo yum check-update | grep kernel >> $kernelcheck_log
                 touch $available
                 #Build sendmail configuration file
@@ -102,9 +103,10 @@ else
                 cat $kernelcheck_log >> $notavailable
                 #sendmail $to < $notavailable
                 #Cleanup
-                sudo rm $notavailable
+                #sudo rm $notavailable
 fi
 
 cat $kernelcheck_log
+sudo rm kernelcheck_log
 
 exit 0
