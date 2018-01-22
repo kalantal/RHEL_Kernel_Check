@@ -2,8 +2,8 @@
 #set -x
 
 #Change "to" and "from" where appropriate
-#to=justin.restivo@citi.com
-to=dl.cate.global.cate.auto.test.environment.owners@imceu.eu.ssmb.com
+to=justin.restivo@citi.com
+#to=dl.cate.global.cate.auto.test.environment.owners@imceu.eu.ssmb.com
 from=kernel-checker@citi.com
 kernelcheck_log=/bin/kernel-check/kernelcheck_log
 notrhel=/bin/kernel-check/not-rhel
@@ -78,6 +78,8 @@ then
                 echo "New version(s) of RHEL kernel:" >> $kernelcheck_log
                 sudo yum check-update | grep kernel >> $kernelcheck_log
                 touch $available
+                echo > $available
+                sed -i '1d' $available
                 #Build sendmail configuration file
                 echo "To: $to" >> $available
                 echo "From: $from" >> $available
@@ -95,13 +97,15 @@ else
                 uname -r >>$kernelcheck_log
                 echo >> $kernelcheck_log
                 touch $notavailable
+                echo > $notavailable
+                sed -i '1d' $notavailable
                 #Build sendmail configuration file
                 echo "To: $to" >> $notavailable
                 echo "From: $from" >> $notavailable
                 echo "Subject: No RHEL kernel update available on system: $(uname -n)" >> $notavailable
                 echo >> $kernelcheck_log
                 cat $kernelcheck_log >> $notavailable
-                #sendmail $to < $notavailable
+                sendmail $to < $notavailable
                 #Cleanup
                 #sudo rm $notavailable
 fi
