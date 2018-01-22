@@ -1,3 +1,4 @@
+
 #!/bin/bash
 #set -x
 
@@ -5,11 +6,11 @@
 to=justin.restivo@citi.com
 #to=dl.cate.global.cate.auto.test.environment.owners@imceu.eu.ssmb.com
 from=kernel-checker@citi.com
-kernelcheck_log=/bin/kernel-check/kernelcheck_log
-notrhel=/bin/kernel-check/not-rhel
-available=/bin/kernel-check/available
-notavailable=/bin/kernel-check/not-available
-checker=/bin/kernel-check/checker
+kernelcheck_log=/auto/bin/kernel-check/kernelcheck_log
+notrhel=/auto/bin/kernel-check/not-rhel
+available=/auto/bin/kernel-check/available
+notavailable=/auto/bin/kernel-check/not-available
+checker=/auto/bin/kernel-check/checker
 
 #Fresh start
 echo > $kernelcheck_log
@@ -105,7 +106,7 @@ else
                 echo "Subject: No RHEL kernel update available on system: $(uname -n)" >> $notavailable
                 echo >> $kernelcheck_log
                 cat $kernelcheck_log >> $notavailable
-                sendmail $to < $notavailable
+                #sendmail $to < $notavailable
                 #Cleanup
                 #sudo rm $notavailable
 fi
