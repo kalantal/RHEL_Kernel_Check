@@ -4,6 +4,8 @@ This is a self-contained script to check for a kernel or RHEL update from a base
 
 Setup:
 
+    sudo mkdir -p /bin/kernel-check
+    sudo cp kernelcheck.sh /bin/kernelcheck.sh
     sudo cp kernelcheck.sh /etc/cron.daily/kernelcheck.sh
     sudo chmod +x /etc/cron.daily/kernelcheck.sh
     vi /etc/cron.daily/kernelcheck.sh and sent "to" field
