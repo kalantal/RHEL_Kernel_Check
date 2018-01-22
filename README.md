@@ -5,13 +5,13 @@ This is a self-contained script to check for a kernel or RHEL update from a base
 Setup:
 
     sudo mkdir -p /bin/kernel-check
-    sudo cp kernelcheck.sh /bin/kernelcheck.sh
-    sudo cp kernelcheck.sh /etc/cron.daily/kernelcheck.sh
-    sudo chmod +x /etc/cron.daily/kernelcheck.sh
-    vi /etc/cron.daily/kernelcheck.sh and sent "to" field
+    sudo cp kernelcheck.sh /bin/kernel-check/kernelcheck.sh
+    sudo chmod +x /bin/kernel-check/kernelcheck.sh
+    #Edit "to" field
+    vi /bin/kernel-check/kernelcheck.sh
     crontab –e
     #2:00 am daily run example:
-    0 2 * * * /etc/cron.daily/kernelcheck.sh
+    0 2 * * * /bin/kernel-check/kernelcheck.sh
 
 Example output:
 
