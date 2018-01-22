@@ -28,7 +28,7 @@ if [ ! -f /etc/redhat-release ]; then
 fi
 
 #Sendmail dependancy
-sudo rpm -qa | grep -qw sendmail || sudo yum install sendmail
+sudo rpm -qa | grep -qw sendmail || sudo yum install sendmail -y
 
 #rpm -qa | grep -qw lshw || sudo yum install lshw
 #You could also add lshw to validate if the machine is virtual or physical
