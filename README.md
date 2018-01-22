@@ -11,6 +11,7 @@ Setup:
     vi /bin/kernel-check/kernelcheck.sh
     crontab –e
     #2:00 am daily run example:
+    #RHEL Kernel Check -- see /bin/kernel-check for more info
     0 2 * * * /bin/kernel-check/kernelcheck.sh
 
 Example output:
